@@ -67,7 +67,19 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser() {
+    void whenCreateThenReturnSuccess() {
+        //Mockar a resposta do repository
+        when(repository.save(any())).thenReturn(user);
+
+        User response = service.createUser(userDTO);
+
+        assertNotNull(response);
+        assertEquals(User.class, response.getClass());
+        assertEquals(ID, response.getId());
+        assertEquals(NAME, response.getName());
+        assertEquals(CPF, response.getCpf());
+        assertEquals(EMAIL, response.getEmail());
+        assertEquals(PASSWORD, response.getPassword());
     }
 
     private void startUser() {
