@@ -3,17 +3,18 @@ package br.api.api.services;
 import br.api.api.domain.User;
 import br.api.api.domain.dtos.UserDTO;
 import br.api.api.repositories.UserRepository;
+import br.api.api.services.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
 
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.when;
 
 class UserServiceTest {
@@ -39,7 +40,7 @@ class UserServiceTest {
 
     @Test
     void whenFindByIdThenReturnUserInstance() {
-        when(repository.findById(Mockito.anyInt())).thenReturn(optionalUser);
+        when(repository.findById(anyInt())).thenReturn(optionalUser);
 
         User response = service.findById(ID);
 
@@ -48,6 +49,17 @@ class UserServiceTest {
         assertEquals(ID, response.getId());
         assertEquals(NAME, response.getName());
         assertEquals(EMAIL, response.getEmail());
+    }
+    @Test
+    void whenFindByIdThenReturnAndObjectNotFoundException() {
+        when(repository.findById(anyInt())).thenThrow(new ObjectNotFoundException("Object not found: " + ID));
+
+        try {
+            service.findById(ID);
+        } catch (Exception ex) {
+            assertEquals(ObjectNotFoundException.class, ex.getClass());
+            assertEquals("Object not found: " + ID, ex.getMessage());
+        }
     }
 
     @Test
