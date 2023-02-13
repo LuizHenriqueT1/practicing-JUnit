@@ -33,9 +33,24 @@ public class UserService {
         return repository.save(newObj);
     }
 
+    public User updateUser(Integer id, UserDTO objDto) {
+        objDto.setId(id);
+        emailIsExisting(objDto);
+        User oldObj = new User(objDto);
+        return repository.save(oldObj);
+    }
+
+    public User deleteUser(Integer id) {
+        Optional<User> obj = repository.findById(id);
+        if (obj.isPresent()) {
+            repository.deleteById(id);
+        }
+        return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found: " + id));
+    }
+
     private void emailIsExisting(UserDTO objDto) {
         Optional<User> user = repository.findByEmail(objDto.getEmail());
-        if (user.isPresent()) {
+        if (user.isPresent() && !user.get().getId().equals(objDto.getId())) {
             throw new DataIntegratyViolationException("Email already registered");
         }
     }
