@@ -1,5 +1,6 @@
 package br.api.api.resources.exception;
 
+import br.api.api.services.exception.DataIntegratyViolationException;
 import br.api.api.services.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -29,7 +30,8 @@ class ResourceExceptionHandlerTest {
         ResponseEntity<StandardError> response = exceptionHandler
                 .objectNotFoundException(
                         new ObjectNotFoundException(OBJECT_NOT_FOUND),
-                        new MockHttpServletRequest());
+                        new MockHttpServletRequest()
+                );
 
         assertNotNull(response);
         assertNotNull(response.getBody());
@@ -41,6 +43,19 @@ class ResourceExceptionHandlerTest {
     }
 
     @Test
-    void dataIntegratyViolationException() {
+    void whenDataIntegratyViolationExceptionThenReturnResponseEntity() {
+        ResponseEntity<StandardError> response = exceptionHandler
+                .dataIntegratyViolationException(
+                        new DataIntegratyViolationException("Conflict Data Value"),
+                        new MockHttpServletRequest()
+                );
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(StandardError.class, response.getBody().getClass());
+        assertEquals("Conflict Data Value", response.getBody().getError());
+        assertEquals(409, response.getBody().getStatus());
     }
 }
