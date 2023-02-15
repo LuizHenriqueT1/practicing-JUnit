@@ -57,5 +57,6 @@ class ResourceExceptionHandlerTest {
         assertEquals(StandardError.class, response.getBody().getClass());
         assertEquals("Conflict Data Value", response.getBody().getError());
         assertEquals(409, response.getBody().getStatus());
+        assertNotEquals("/user/2", response.getBody().getPath());
     }
 }
