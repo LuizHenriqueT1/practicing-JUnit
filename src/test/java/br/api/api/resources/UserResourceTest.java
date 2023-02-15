@@ -98,11 +98,32 @@ class UserResourceTest {
     }
 
     @Test
-    void updateUser() {
+    void whenUpdateThenReturnSuccess() {
+        when(service.updateUser(ID, userDTO)).thenReturn(user);
+
+        ResponseEntity<UserDTO> response = resource.updateUser(ID, userDTO);
+
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        assertEquals(ID, response.getBody().getId());
+        assertEquals(NAME, response.getBody().getName());
+        assertEquals(EMAIL, response.getBody().getEmail());
+        assertEquals(CPF, response.getBody().getCpf());
     }
 
     @Test
-    void deleteUser() {
+    void whenDeleteThenReturnSuccess() {
+        doNothing().when(service.deleteUser(anyInt()));
+
+        ResponseEntity<UserDTO> response = resource.deleteUser(ID);
+
+        assertNotNull(response);
+        assertEquals(ResponseEntity.class, response.getClass());
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+        verify(service, times(1)).deleteUser(ID);
     }
 
     private void startUser() {
