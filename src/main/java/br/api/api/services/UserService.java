@@ -40,12 +40,9 @@ public class UserService {
         return repository.save(oldObj);
     }
 
-    public User deleteUser(Integer id) {
-        Optional<User> obj = repository.findById(id);
-        if (obj.isPresent()) {
-            repository.deleteById(id);
-        }
-        return obj.orElseThrow(() -> new ObjectNotFoundException("Object not found: " + id));
+    public void deleteUser(Integer id) {
+        findById(id);
+        repository.deleteById(id);
     }
 
     private void emailIsExisting(UserDTO objDto) {

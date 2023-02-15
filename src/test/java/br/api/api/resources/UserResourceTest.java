@@ -2,15 +2,15 @@ package br.api.api.resources;
 
 import br.api.api.domain.User;
 import br.api.api.domain.dtos.UserDTO;
+import br.api.api.repositories.UserRepository;
 import br.api.api.services.UserService;
-import org.junit.jupiter.api.Assertions;
+import br.api.api.services.exception.ObjectNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.platform.engine.TestExecutionResult;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.stubbing.OngoingStubbing;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static javax.security.auth.callback.ConfirmationCallback.OK;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -59,8 +58,8 @@ class UserResourceTest {
         assertNotNull(response.getBody());
         assertEquals(ResponseEntity.class, response.getClass());
         assertEquals(UserDTO.class, response.getBody().getClass());
+        assertEquals(HttpStatus.OK, response.getStatusCode());
 
-        assertThat(response.getStatusCodeValue()).isEqualTo(200);
         assertThat(userDto.getId()).isEqualTo(ID);
         assertThat(userDto.getName()).isEqualTo(NAME);
         assertThat(userDto.getEmail()).isEqualTo(EMAIL);
@@ -116,7 +115,7 @@ class UserResourceTest {
 
     @Test
     void whenDeleteThenReturnSuccess() {
-        doNothing().when(service.deleteUser(anyInt()));
+        doNothing().when(service).deleteUser(anyInt());
 
         ResponseEntity<UserDTO> response = resource.deleteUser(ID);
 
