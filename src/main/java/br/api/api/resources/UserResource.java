@@ -29,7 +29,7 @@ public class UserResource {
     public ResponseEntity<List<UserDTO>> findAllUser() {
         List<User> list = service.findAllUser();
         List<UserDTO> listDto = list.stream()
-                .map(epy -> new UserDTO(epy)).collect(Collectors.toList());
+                .map(x -> new UserDTO(x)).collect(Collectors.toList());
         return ResponseEntity.ok().body(listDto);
     }
 
